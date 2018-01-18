@@ -1,47 +1,68 @@
 package com.khs.springbootmicroserver;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-// @SpringBootApplication
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication
 public class SpringBootMicroserverApplication {
 
+
+	public static final Map<String, Object> env = Collections.synchronizedMap(new LinkedHashMap<String,Object>(){});
+	
+	
+	
+	public SpringBootMicroserverApplication(){
+		
+	
+	}
+	
 	public static void main(String[] args) throws Exception {
-		URLReader.main(args);
+		SpringApplication.run(SpringBootMicroserverApplication.class,args);
+		//new SpringBootMicroserverApplication();
+		//URLReader.main(args);
 		// Class<?> regeneratedClass = this.defineClass(rawBytes, 0, rawBytes.length);
-/*
+
  
  
  
- public class UnzipFile {
-    public static void main(String[] args) throws IOException {
-        String fileZip = "compressed.zip";
-        byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+ class UnzipFile {
+ 	
+    public Map<String,List<Integer>> unzipFilesToBytes(InputStream r) throws Exception {
+    	Map<String,List<Integer>> rtn = new LinkedHashMap<>();
+    	//String fileZip = file.getAbsolutePath();
+        ZipInputStream zis = new ZipInputStream(r);//new FileInputStream(fileZip));
         ZipEntry zipEntry = zis.getNextEntry();
         while(zipEntry != null){
-            String fileName = zipEntry.getName();
-            File newFile = new File("unzipTest/" + fileName);
-            FileOutputStream fos = new FileOutputStream(newFile);
-            int len;
-            while ((len = zis.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
+            String fileName = zipEntry.getName()+"";
+            List<Integer> fileData = new ArrayList<Integer>();
+            int i;
+            while ((i = zis.read())!=-1) {
+            	fileData.add(new Integer(i));
             }
-            fos.close();
-            zipEntry = zis.getNextEntry();
+            rtn.put(fileName, fileData);
+            zipEntry = zis.getNextEntry(); 
         }
         zis.closeEntry();
         zis.close();
+        return rtn;
     }
 }
 
- */
+ 
 		
 //		if(args.length==0){
 //			System.out.println("Error: required arguments missing. Please list one or more runnable jar files as URLs."
