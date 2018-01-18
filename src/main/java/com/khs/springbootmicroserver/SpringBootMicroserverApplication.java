@@ -39,28 +39,7 @@ public class SpringBootMicroserverApplication {
  
  
  
- class UnzipFile {
- 	
-    public Map<String,List<Integer>> unzipFilesToBytes(InputStream r) throws Exception {
-    	Map<String,List<Integer>> rtn = new LinkedHashMap<>();
-    	//String fileZip = file.getAbsolutePath();
-        ZipInputStream zis = new ZipInputStream(r);//new FileInputStream(fileZip));
-        ZipEntry zipEntry = zis.getNextEntry();
-        while(zipEntry != null){
-            String fileName = zipEntry.getName()+"";
-            List<Integer> fileData = new ArrayList<Integer>();
-            int i;
-            while ((i = zis.read())!=-1) {
-            	fileData.add(new Integer(i));
-            }
-            rtn.put(fileName, fileData);
-            zipEntry = zis.getNextEntry(); 
-        }
-        zis.closeEntry();
-        zis.close();
-        return rtn;
-    }
-}
+ 
 
  
 		
@@ -90,25 +69,35 @@ public class SpringBootMicroserverApplication {
 //		}
 	}
 }
-class URLReader {
-    public static void main(String[] args) throws Exception {
-    	int i=0;
-        URL[] oracle = new URL[args.length];
-        String[] rtn = new String[args.length];
-        for(String arg : args) {oracle[i]=new URL(args[i]);rtn[i]="";
+
+class FileUtil {
+    public static String bytesToString(List<Integer> b) {StringWriter sw = new StringWriter();for(Integer i : b) {sw.write(0+i);}sw.flush();return sw.toString();}
+    public static byte[] bytesToArray(List<Integer> b) {byte[] rtn = new byte[b.size()];int index=0;for(Integer i : b) {rtn[index++]=(byte)(0+i);}return rtn;}
+	public static List<Integer> URLToBytes(String url) throws Exception {
+    	List<Integer> rtn = new ArrayList<Integer>();
         BufferedReader in = new BufferedReader(
-        new InputStreamReader(oracle[i].openStream()));
-        StringWriter sw = new StringWriter();
-        
-        String inputLine;
+        new InputStreamReader(new URL(url).openStream()));
         int in1=1;
-        while ((in1=in.read())!=-1) {
-            System.out.write(in1);
-            sw.write(in1);
-        }
-        rtn[i]=sw.toString();
+        while ((in1=in.read())!=-1) {rtn.add(new Integer(in1));}
         in.close();
-        i++;
+        return rtn;
+    } 	
+    public static Map<String,List<Integer>> unzipFilesToBytes(InputStream r) throws Exception {
+    	Map<String,List<Integer>> rtn = new LinkedHashMap<>();
+        ZipInputStream zis = new ZipInputStream(r);//new FileInputStream(fileZip));
+        ZipEntry zipEntry = zis.getNextEntry();
+        while(zipEntry != null){
+            String fileName = zipEntry.getName()+"";
+            List<Integer> fileData = new ArrayList<Integer>();
+            int i;
+            while ((i = zis.read())!=-1) {
+            	fileData.add(new Integer(i));
+            }
+            rtn.put(fileName, fileData);
+            zipEntry = zis.getNextEntry(); 
         }
+        zis.closeEntry();
+        zis.close();
+        return rtn;
     }
 }
