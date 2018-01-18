@@ -71,6 +71,13 @@ public class SpringBootMicroserverApplication {
 }
 
 class FileUtil {
+	
+	public static Class<?> bytesToClass(String name,List<Integer> l){
+		byte[] b = bytesToArray(l);
+		return (new ClassLoader() {public Class<?> getClassFromBytes(String name,byte[] b) {
+	        return this.defineClass(name+"", b, 0, b.length);
+	    }}).getClassFromBytes(name,b);
+	}
     public static String bytesToString(List<Integer> b) {StringWriter sw = new StringWriter();for(Integer i : b) {sw.write(0+i);}sw.flush();return sw.toString();}
     public static byte[] bytesToArray(List<Integer> b) {byte[] rtn = new byte[b.size()];int index=0;for(Integer i : b) {rtn[index++]=(byte)(0+i);}return rtn;}
 	public static List<Integer> URLToBytes(String url) throws Exception {
@@ -100,4 +107,5 @@ class FileUtil {
         zis.close();
         return rtn;
     }
+    
 }
